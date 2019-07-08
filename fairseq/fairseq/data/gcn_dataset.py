@@ -206,8 +206,8 @@ class GCNDataset(FairseqDataset):
             'source': self.src[index],
             'target': self.tgt[index] if self.tgt is not None else None,
             'labels': self.labels[index] if self.labels is not None else None,
-            'node1': self.labels[index] if self.node1 is not None else None,
-            'node2': self.labels[index] if self.node2 is not None else None,
+            'node1': self.node1[index] if self.node1 is not None else None,
+            'node2': self.node2[index] if self.node2 is not None else None,
         }
 
     def __len__(self):
@@ -231,8 +231,8 @@ class GCNDataset(FairseqDataset):
                 'source': self.src_dict.dummy_sentence(src_len),
                 'target': self.tgt_dict.dummy_sentence(tgt_len) if self.tgt_dict is not None else None,
                 'labels': self.labels[i] if self.labels is not None else None,
-                'node1': self.labels[i] if self.node1 is not None else None,
-                'node2': self.labels[i] if self.node2 is not None else None,
+                'node1': self.node1[i] if self.node1 is not None else None,
+                'node2': self.node2[i] if self.node2 is not None else None,
             }
             for i in range(bsz)
         ])
