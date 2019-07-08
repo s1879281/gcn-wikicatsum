@@ -42,13 +42,13 @@ def get_adj(src_tokens, src_lengths, labels, node1, node2, labels_dict, node1_di
 
             arc_0 = labels_dict[labels[d, a]]
 
-            if arc_0 == '<unk>' or arc_0 == '<pad>' or arc_0 == '</s>':
+            if arc_0 not in ['A0', 'A1', 'coref', 'RL', 'NE']:
                 pass
             else:
                 arc_1 = int(node1_dict[arc])
                 arc_2 = int(node2_dict[node2[d, a]])
 
-                if arc_1 >= _MAX_BATCH_LEN - 1 or arc_2 >= _MAX_BATCH_LEN - 1:
+                if arc_1 >= _MAX_BATCH_LEN or arc_2 >= _MAX_BATCH_LEN:
                     continue
 
                 if arc_1 in tmp_in:
