@@ -13,6 +13,7 @@ import numpy as np
 import torch
 
 from . import FairseqDataset
+from .dataloader import DataLoader
 
 
 def infer_language_pair(path):
@@ -195,7 +196,7 @@ class EpochBatchIterator(object):
                 np.random.shuffle(batches)
         else:
             batches = self.frozen_batches
-        return CountingIterator(torch.utils.data.DataLoader(
+        return CountingIterator(DataLoader(
             self.dataset,
             collate_fn=self.dataset.collater,
             batch_sampler=ShardedIterator(batches, self.num_shards, self.shard_id, fill_value=[]),
