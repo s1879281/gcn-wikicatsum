@@ -114,7 +114,7 @@ def get_parser(desc, default_task='translation'):
     parser.add_argument('--no-progress-bar', action='store_true', help='disable progress bar')
     parser.add_argument('--log-interval', type=int, default=100, metavar='N',
                         help='log progress every N batches (when progress bar is disabled)')
-    parser.add_argument('--log-format', default=None, help='log format to use',
+    parser.add_argument('--log-format', default='simple', help='log format to use',
                         choices=['json', 'none', 'simple', 'tqdm'])
     parser.add_argument('--seed', default=1, type=int, metavar='N',
                         help='pseudo random number generator seed')
