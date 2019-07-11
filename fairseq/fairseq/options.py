@@ -238,12 +238,12 @@ def add_checkpoint_args(parser):
 
 
 def add_common_eval_args(group):
-    group.add_argument('--path', metavar='FILE',
+    group.add_argument('--path', default='checkpoints/gcn/checkpoint_best.pt', metavar='FILE',
                        help='path(s) to model file(s), colon separated')
     group.add_argument('--remove-bpe', nargs='?', const='@@ ', default=None,
                        help='remove BPE tokens before scoring')
     group.add_argument('--cpu', action='store_true', help='generate on CPU')
-    group.add_argument('--quiet', action='store_true',
+    group.add_argument('--quiet', action='store_false',
                        help='only print final scores')
 
 
