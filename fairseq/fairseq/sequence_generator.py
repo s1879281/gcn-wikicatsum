@@ -155,7 +155,7 @@ class SequenceGenerator(object):
 
                     mask_loop = mask_loop.t().contiguous().view(bsz, -1).repeat(1, beam_size).view(1, -1).t().contiguous()
 
-                    sent_mask = sent_mask.repeat(1, beam_size).view(-1, srclen)
+                    sent_mask = sent_mask.transpose(0, 1).repeat(1, beam_size).view(-1, srclen).transpose(0, 1)
 
                     encoder_out = model.encoder(
                         src_tokens.repeat(1, beam_size).view(-1, srclen),
