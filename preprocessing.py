@@ -10,12 +10,14 @@ import os
 import argparse
 
 
+punc = "！？｡＂＃＄％＆＇（）＊＋，－／：；＜＝＞＠［＼］＾＿｀｛｜｝～｟｠｢｣､、〃》「」『』【】〔〕〖〗〘〙〚〛〜〝〞〟〰〾〿–—‘’‛“”„‟…‧﹏."
+
 def parse_args():
     parser = argparse.ArgumentParser(description='preprocess.py')
     parser.add_argument('--split', default="train", help="Split of the data to be preprocessed. Options: [train|valid|test].")
-    parser.add_argument('--data-dir', default="data/film_tok_min5_L7.5k", help="Path to data directory.")
-    parser.add_argument('--no-raw', action='store_true', help="Do not to preprocess the raw dataset.")
-    parser.add_argument('--save-dir', default="data/film_tok_min5_L7.5k/relations", help="Path to save results.")
+    parser.add_argument('--data-dir', default="fairseq/data/film_tok_min5_L7.5k", help="Path to data directory.")
+    parser.add_argument('--raw', action='store_false', help="Preprocess the raw dataset.")
+    parser.add_argument('--save-dir', default="fairseq/data/film_tok_min5_L7.5k/modified", help="Path to save results.")
 
     args = parser.parse_args()
 
@@ -23,7 +25,7 @@ def parse_args():
 
 def _normalize_text_cleaned(text):
    # Space around punctuation
-    text = re.sub("[%s]" % re.escape(string.punctuation), r" \g<0> ", text)
+    text = re.sub("[%s]" % re.escape(string.punctuation + punc), r" \g<0> ", text)
     text = re.sub(r"\s+", " ", text)
     text = re.sub(r"< EOP >", "<EOP>", text)
     text = re.sub(r"< EOT >", "<EOT>", text)
@@ -55,16 +57,16 @@ def readfile(path):
 
     :param path: Path to the file.
     :param n: Read first n instances.
-    :return: A list of lists, each of which contains the title and first 800 tokens of each instance.
+    :return: A list of lists, each of which contains the first 850 tokens of each instance.
     """
 
     texts = []
     with open(path, 'rb') as f:
         for line in f.readlines():
-            line = _normalize_text_cleaned(line.decode()).split('<EOT>')
-            title, doc = line[0].strip(), line[1].strip()     # Split title and document
-            doc = ' '.join(doc.split()[:800])                 # Restrict the size of input to the first 800 tokens
-            texts.append((title, doc))
+            line = _normalize_text_cleaned(line.decode())
+            text = ' '.join(line.split()[:850])               # In preprocessing, we restrict the size of input to the first 850 tokens 
+                                                              # <EOP> symbols are included and will be later removed
+            texts.append(text)
     return texts
 
 def getConnections(args, text, text_index):
@@ -82,9 +84,12 @@ def getConnections(args, text, text_index):
     """
 
     # Save the index of the beginning token of each paragraph into a list
-    paragraphs = [paragraph.strip() for paragraph in text.split('<EOP>')]
+    splitted_text = text.split(' <EOT> ')
+    title, doc = splitted_text[0], splitted_text[1]
+    title_length = len(title.split())
+    paragraphs = doc.split(' <EOP> ')
     paragraph_lengths = [len(paragraph.split()) for paragraph in paragraphs]
-    paragraph_start_indices = [0] + paragraph_lengths
+    paragraph_start_indices = [title_length + 1] + paragraph_lengths
     paragraph_start_indices.pop()
     for i in range(1, len(paragraph_start_indices)):
         paragraph_start_indices[i] += paragraph_start_indices[i - 1]
@@ -99,11 +104,13 @@ def getConnections(args, text, text_index):
         triples += nlp.getOpenie(paragraph, index, paragraph_start_indices[index])
         coref += nlp.getCoref(paragraph, paragraph_start_indices[index])
 
-    coref += interParagraphStringMatch(triples)      # Append the string matches to the coreference list
+    # Append the string matches to the coreference list
+    coref += interParagraphStringMatch(triples)          
+    coref += titleStringMatch(title, doc)
 
     # Wrire triples and coreference into txt files
-    triples_path = os.path.join(args.save_dir, args.split, 'triples.txt')
-    coref_path = os.path.join(args.save_dir, args.split, 'coref.txt')
+    triples_path = os.path.join(args.save_dir, args.split + '.triples')
+    coref_path = os.path.join(args.save_dir, args.split + '.coref')
 
     with open(triples_path, 'a+', encoding='utf8') as f:
         strTriples = [str(triple) for triple in triples]
@@ -262,6 +269,31 @@ def interParagraphStringMatch(triples):
                                       'mentionedSpan': triple[entity + 'Span']})
     return stringMatches
 
+def titleStringMatch(title, doc):
+    """
+    From the paragraphs, find out all of the strings that match the title.
+    The title is stored as 'representativeMention', while the strings from the paragraphs are stored as 'mentioned'.
+
+    :param title: 
+    :param title_length:
+    :param doc:
+    :return: Each coreference relation is represented by a dictionary with entries:
+                    'representativeMention', 'representativeMentionSpan', 'mentioned', 'mentionedSpan'.
+    """
+    text = title.split() + ['<EOT>'] + doc.replace(' <EOP> ', ' ').split()
+    title_length = len(title.split())
+    text_length = len(text)
+    doc_start_index = title_length + 1       # Plus <EOT>
+    stringMatches = []
+    for i in range(doc_start_index, text_length - title_length + 1):
+        string = ' '.join(text[i: i + title_length])
+        if string == title:
+            stringMatches.append({'representativeMention': title,
+                                    'representativeMentionSpan': [0, title_length],
+                                    'mentioned': string,
+                                    'mentionedSpan': [i, i + title_length]})
+    return stringMatches
+
 class CoreNLPService:
     def __init__(self):
        self.server = self.get_server()
@@ -335,16 +367,16 @@ class CoreNLPService:
         return triples
 
 def main(args):
-    if args.no_raw:
+    if not args.raw:
         data_path = os.path.join(args.data_dir, args.split) + '.src'
     else:
         data_path = os.path.join(args.data_dir, args.split) + '.raw.src'
     texts = readfile(data_path)
 
-    labels_path = os.path.join(args.save_dir, args.split, 'labels.txt')
-    nodes_path = os.path.join(args.save_dir, args.split, 'nodes.txt')
-    nodes1_path = os.path.join(args.save_dir, args.split, 'nodes1.txt')
-    nodes2_path = os.path.join(args.save_dir, args.split, 'nodes2.txt')
+    labels_path = os.path.join(args.save_dir, args.split + '.labels')
+    nodes_path = os.path.join(args.save_dir, args.split + '.nodes')
+    nodes1_path = os.path.join(args.save_dir, args.split + '.nodes1')
+    nodes2_path = os.path.join(args.save_dir, args.split + '.nodes2')
 
     finished_count = _count_lines(labels_path, nodes_path, nodes1_path, nodes2_path)
     print("Processing %s from instance %d." % (data_path, finished_count + 1))
@@ -353,7 +385,7 @@ def main(args):
 
     for ind in range(finished_count, max_lines):
         text = texts[ind]
-        nodes, labels, nodes1, nodes2 = buildGraphwithNE(args, text[1], ind)
+        nodes, labels, nodes1, nodes2 = buildGraphwithNE(args, text, ind)
         with open(nodes_path, 'a+', encoding='utf8') as f:
             f.write(' '.join(nodes))
             f.write('\n')
