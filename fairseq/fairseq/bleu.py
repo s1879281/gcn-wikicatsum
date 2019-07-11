@@ -10,7 +10,7 @@ import math
 import torch
 
 try:
-    from fairseq.clib import libbleu
+    from fairseq import libbleu
 except ImportError as e:
     import sys
     sys.stderr.write('ERROR: missing libbleu.so. run `python setup.py install`\n')
