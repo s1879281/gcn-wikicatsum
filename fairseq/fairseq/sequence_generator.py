@@ -11,7 +11,7 @@ import torch
 
 from fairseq import utils
 from fairseq.models import FairseqIncrementalDecoder
-from models.fconv_gcn import FConvGCNEncoder
+from .models.fconv_gcn import FConvGCNEncoder
 
 
 
