@@ -8,6 +8,5 @@
 from .multiprocessing_pdb import pdb
 from .sequence_generator import SequenceGenerator
 from .sequence_generatorWCSSepahypo import SequenceGeneratorWCSSepahypo
-from .clib import libbleu
 
 __all__ = ['pdb']
