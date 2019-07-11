@@ -126,10 +126,56 @@ class SequenceGenerator(object):
                     incremental_states[model] = None
 
                 # compute the encoder output for each beam
-                encoder_out = model.encoder(
-                    src_tokens.repeat(1, beam_size).view(-1, srclen),
-                    src_lengths.expand(beam_size, src_lengths.numel()).t().contiguous().view(-1),
-                )
+                if isinstance(model.encoder, FConvGCNEncoder):
+                    adj_arc_in = input['adj_arc_in']
+                    adj_arc_out = input['adj_arc_out']
+                    adj_lab_in = input['adj_lab_in']
+                    adj_lab_out = input['adj_lab_out']
+                    mask_in = input['mask_in']
+                    mask_out = input['mask_out']
+                    mask_loop = input['mask_loop']
+                    sent_mask = input['sent_mask']
+
+                    degree = mask_in.size(1)
+
+                    adj_arc_in = adj_arc_in.view(bsz * 2, -1).repeat(1, beam_size).view(2, -1)
+                    adj_arc_in[0] = torch.LongTensor([i // (srclen * degree) for i in range(adj_arc_in.size(1))])
+                    
+                    adj_arc_out = adj_arc_out.view(bsz * 2, -1).repeat(1, beam_size).view(2, -1)
+                    adj_arc_out[0] = torch.LongTensor([i // (srclen * degree) for i in range(adj_arc_out.size(1))])
+
+                    adj_lab_in = adj_lab_in.view(bsz, -1).repeat(1, beam_size).view(1, -1)
+
+                    adj_lab_out = adj_lab_out.view(bsz, -1).repeat(1, beam_size).view(1, -1)
+
+                    mask_in = mask_in.t().contiguous().view(degree * bsz, -1)
+                                .repeat(1, beam_size).view(degree, -1).t().contiguous()
+                                
+                    mask_out = mask_out.t().contiguous().view(degree * bsz, -1)
+                                .repeat(1, beam_size).view(degree, -1).t().contiguous()
+
+                    mask_loop = mask_loop.t().contiguous().view(bsz, -1)
+                                .repeat(1, beam_size).view(1, -1).t().contiguous()
+
+                    sent_mask = sent_mask.repeat(1, beam_size).view(-1, srclen)
+
+                    encoder_out = model.encoder(
+                        src_tokens.repeat(1, beam_size).view(-1, srclen),
+                        src_lengths.expand(beam_size, src_lengths.numel()).t().contiguous().view(-1),
+                        adj_arc_in,
+                        adj_arc_out,
+                        adj_lab_in,
+                        adj_lab_out,
+                        mask_in,
+                        mask_out,
+                        mask_loop,
+                        sent_mask
+                    )
+                else:
+                    encoder_out = model.encoder(
+                        src_tokens.repeat(1, beam_size).view(-1, srclen),
+                        src_lengths.expand(beam_size, src_lengths.numel()).t().contiguous().view(-1),
+                    )
                 encoder_outs.append(encoder_out)
         else:
             bsz, srclen, ssentlen = input['src_tokens'].size()
