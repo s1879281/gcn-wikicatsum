@@ -10,7 +10,7 @@ import math
 import torch
 
 from fairseq import utils
-from fairseq.models import FairseqIncrementalDecoder
+from fairseq.models import FairseqIncrementalDecoder, FConvGCNEncoder
 
 
 
