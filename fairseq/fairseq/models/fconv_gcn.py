@@ -482,6 +482,17 @@ class FConvGCNEncoder(FairseqEncoder):
 
         return encoder_output
 
+    def reorder_encoder_out(self, encoder_out_dict, new_order):
+        if encoder_out_dict['encoder_out'] is not None:
+            encoder_out_dict['encoder_out'] = (
+                encoder_out_dict['encoder_out'][0].index_select(0, new_order),
+                encoder_out_dict['encoder_out'][1].index_select(0, new_order),
+            )
+        if encoder_out_dict['encoder_padding_mask'] is not None:
+            encoder_out_dict['encoder_padding_mask'] = \
+                encoder_out_dict['encoder_padding_mask'].index_select(0, new_order)
+        return encoder_out_dict
+
     def max_positions(self):
         """Maximum input length supported by the encoder."""
         return self.gcn_encoder.max_positions()
