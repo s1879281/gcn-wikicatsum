@@ -148,14 +148,11 @@ class SequenceGenerator(object):
 
                     adj_lab_out = adj_lab_out.view(bsz, -1).repeat(1, beam_size).view(1, -1)
 
-                    mask_in = mask_in.t().contiguous().view(degree * bsz, -1)
-                                .repeat(1, beam_size).view(degree, -1).t().contiguous()
-                                
-                    mask_out = mask_out.t().contiguous().view(degree * bsz, -1)
-                                .repeat(1, beam_size).view(degree, -1).t().contiguous()
+                    mask_in = mask_in.t().contiguous().view(degree * bsz, -1).repeat(1, beam_size).view(degree, -1).t().contiguous()
 
-                    mask_loop = mask_loop.t().contiguous().view(bsz, -1)
-                                .repeat(1, beam_size).view(1, -1).t().contiguous()
+                    mask_out = mask_out.t().contiguous().view(degree * bsz, -1).repeat(1, beam_size).view(degree, -1).t().contiguous()
+
+                    mask_loop = mask_loop.t().contiguous().view(bsz, -1).repeat(1, beam_size).view(1, -1).t().contiguous()
 
                     sent_mask = sent_mask.repeat(1, beam_size).view(-1, srclen)
 
