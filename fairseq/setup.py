@@ -13,7 +13,7 @@ import sys
 if sys.version_info < (3,):
     sys.exit('Sorry, Python3 is required for fairseq.')
 
-with open('README.md') as f:
+with open('FAIRSEQ_README.md') as f:
     readme = f.read()
 
 with open('LICENSE') as f:
