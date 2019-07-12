@@ -32,7 +32,7 @@ def get_parser():
     parser.add_argument('--node2', default='node2', help='node2')
     parser.add_argument('--trainpref', metavar='FP', default='data/film_tok_min5_L7.5k/train', help='target language')
     parser.add_argument('--validpref', metavar='FP', default='data/film_tok_min5_L7.5k/valid', help='comma separated, valid language prefixes')
-    parser.add_argument('--testpref', metavar='FP', default=None, help='comma separated, test language prefixes')
+    parser.add_argument('--testpref', metavar='FP', default='data/film_tok_min5_L7.5k/test', help='comma separated, test language prefixes')
     parser.add_argument('--destdir', metavar='DIR', default='data-bin/film_tok_min5_L7.5k_gcn_L800', help='destination dir')
     parser.add_argument('--thresholdtgt', metavar='N', default=0, type=int,
                         help='map words appearing less than threshold times to unknown')
