@@ -161,6 +161,10 @@ def main(args):
                     f.write(make_html_safe(hypo_str))
                     f.close()
 
+            if target_str:
+                with open(os.path.join(args.reference_dir,"{}.ref".format(sample_id)),'w') as f:
+                    f.write(make_html_safe(target_str))
+                    f.close()
 
             wps_meter.update(src_tokens.size(0))
             t.log({'wps': round(wps_meter.avg)})
