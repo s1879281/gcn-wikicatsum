@@ -219,7 +219,7 @@ def add_optimization_args(parser):
 
 def add_checkpoint_args(parser):
     group = parser.add_argument_group('Checkpointing')
-    group.add_argument('--save-dir', metavar='DIR', default='checkpoints/gcn',
+    group.add_argument('--save-dir', metavar='DIR', default='checkpoints/gcn_2layers',
                        help='path to save checkpoints')
     group.add_argument('--restore-file', default='checkpoint_last.pt',
                        help='filename in save-dir from which to load checkpoint')
