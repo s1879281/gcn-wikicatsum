@@ -97,7 +97,7 @@ class FConvGCNModel(FairseqGCNModel):
              dictionary=task.source_dictionary,
              embed_dim=args.encoder_embed_dim,
              embed_dict=encoder_embed_dict,
-             max_positions=1024,
+             max_positions=args.max_source_positions,
              dropout=args.dropout,
              num_inputs=args.gcn_num_inputs,
              num_units=args.gcn_num_units,
@@ -517,7 +517,7 @@ def fconv_gcn_wikicatsum(args):
     args.gcn_num_inputs = getattr(args, 'gcn_num_inputs', 256)
     args.gcn_num_units = getattr(args, 'gcn_num_units', 256)
     args.gcn_num_labels = getattr(args, 'gcn_num_labels', 10)
-    args.gcn_num_layers = getattr(args, 'gcn_num_layers', 2)
+    args.gcn_num_layers = getattr(args, 'gcn_num_layers', 1)
 
     args.encoder_embed_dim = getattr(args, 'encoder_embed_dim', 256)
     args.encoder_layers = getattr(args, 'encoder_layers', '[(256, 3)] * 4')
