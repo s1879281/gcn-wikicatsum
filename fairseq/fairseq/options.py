@@ -149,7 +149,7 @@ def add_dataset_args(parser, train=False, gen=False):
                            help='maximum number of sentences in a validation batch'
                                 ' (defaults to --max-sentences)')
     if gen:
-        group.add_argument('--gen-subset', default='test', metavar='SPLIT',
+        group.add_argument('--gen-subset', default='valid', metavar='SPLIT',
                            help='data subset to generate (train, valid, test)')
         group.add_argument('--num-shards', default=1, type=int, metavar='N',
                            help='shard generation over N shards')
@@ -219,7 +219,7 @@ def add_optimization_args(parser):
 
 def add_checkpoint_args(parser):
     group = parser.add_argument_group('Checkpointing')
-    group.add_argument('--save-dir', metavar='DIR', default='checkpoints/gcn_2layers',
+    group.add_argument('--save-dir', metavar='DIR', default='checkpoints/gcn_1layer',
                        help='path to save checkpoints')
     group.add_argument('--restore-file', default='checkpoint_last.pt',
                        help='filename in save-dir from which to load checkpoint')
@@ -239,7 +239,7 @@ def add_checkpoint_args(parser):
 
 
 def add_common_eval_args(group):
-    group.add_argument('--path', default='checkpoints/gcn/checkpoint_best.pt', metavar='FILE',
+    group.add_argument('--path', default='checkpoints/gcn_1layer/checkpoint_best.pt', metavar='FILE',
                        help='path(s) to model file(s), colon separated')
     group.add_argument('--remove-bpe', nargs='?', const='@@ ', default=None,
                        help='remove BPE tokens before scoring')

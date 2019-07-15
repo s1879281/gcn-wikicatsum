@@ -30,10 +30,10 @@ def get_parser():
     parser.add_argument('--labels', default='labels', help='labels')
     parser.add_argument('--node1', default='node1', help='node1')
     parser.add_argument('--node2', default='node2', help='node2')
-    parser.add_argument('--trainpref', metavar='FP', default='data/film_tok_min5_L7.5k/train', help='target language')
-    parser.add_argument('--validpref', metavar='FP', default='data/film_tok_min5_L7.5k/valid', help='comma separated, valid language prefixes')
-    parser.add_argument('--testpref', metavar='FP', default='data/film_tok_min5_L7.5k/test', help='comma separated, test language prefixes')
-    parser.add_argument('--destdir', metavar='DIR', default='data-bin/film_tok_min5_L7.5k_gcn_L800', help='destination dir')
+    parser.add_argument('--trainpref', metavar='FP', default='data/film_tok_min5_L7.5k/modified/train', help='target language')
+    parser.add_argument('--validpref', metavar='FP', default='data/film_tok_min5_L7.5k/modified/valid', help='comma separated, valid language prefixes')
+    parser.add_argument('--testpref', metavar='FP', default='data/film_tok_min5_L7.5k/modified/test', help='comma separated, test language prefixes')
+    parser.add_argument('--destdir', metavar='DIR', default='data-bin/film_tok_min5_L7.5k_gcn_mod_L800', help='destination dir')
     parser.add_argument('--thresholdtgt', metavar='N', default=0, type=int,
                         help='map words appearing less than threshold times to unknown')
     parser.add_argument('--thresholdsrc', metavar='N', default=0, type=int,

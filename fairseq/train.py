@@ -347,9 +347,9 @@ def load_dataset_splits(args, task, splits):
 
 if __name__ == '__main__':
     parser = options.get_training_parser()
-    parser.add_argument('--outindices', required=False,type=str,
+    parser.add_argument('--outindices', default='excluded_indices/ignoredIndices.log', required=False,type=str,
                             help='load set of indices that were out for a category dataset.')
-    parser.add_argument('--outindicesValid', required=False,type=str,
+    parser.add_argument('--outindicesValid', default='excluded_indices/valid_ignoredIndices.log', required=False,type=str,
                             help='load set of indices that were out for a category dataset.')
     args = options.parse_args_and_arch(parser)
 

@@ -22,7 +22,7 @@ class GCNWikiCatSumTask(FairseqTask):
     @staticmethod
     def add_args(parser):
         """Add task-specific arguments to the parser."""
-        parser.add_argument('--data', default='data-bin/film_tok_min5_L7.5k_gcn_L800', metavar='DIR', help='path to data directory')
+        parser.add_argument('--data', default='data-bin/film_tok_min5_L7.5k_gcn_mod_L800', metavar='DIR', help='path to data directory')
         parser.add_argument('-s', '--source-lang', default=None, metavar='SRC',
                             help='source language')
         parser.add_argument('-t', '--target-lang', default=None, metavar='TARGET',

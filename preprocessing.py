@@ -14,7 +14,7 @@ punc = "！？｡＂＃＄％＆＇（）＊＋，－／：；＜＝＞＠［＼
 
 def parse_args():
     parser = argparse.ArgumentParser(description='preprocess.py')
-    parser.add_argument('--split', default="train", help="Split of the data to be preprocessed. Options: [train|valid|test].")
+    parser.add_argument('--split', default="test", help="Split of the data to be preprocessed. Options: [train|valid|test].")
     parser.add_argument('--data-dir', default="fairseq/data/film_tok_min5_L7.5k", help="Path to data directory.")
     parser.add_argument('--raw', action='store_false', help="Preprocess the raw dataset.")
     parser.add_argument('--save-dir', default="fairseq/data/film_tok_min5_L7.5k/modified", help="Path to save results.")
@@ -375,8 +375,8 @@ def main(args):
 
     labels_path = os.path.join(args.save_dir, args.split + '.labels')
     nodes_path = os.path.join(args.save_dir, args.split + '.nodes')
-    nodes1_path = os.path.join(args.save_dir, args.split + '.nodes1')
-    nodes2_path = os.path.join(args.save_dir, args.split + '.nodes2')
+    nodes1_path = os.path.join(args.save_dir, args.split + '.node1')
+    nodes2_path = os.path.join(args.save_dir, args.split + '.node2')
 
     finished_count = _count_lines(labels_path, nodes_path, nodes1_path, nodes2_path)
     print("Processing %s from instance %d." % (data_path, finished_count + 1))

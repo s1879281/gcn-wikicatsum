@@ -518,6 +518,7 @@ def fconv_gcn_wikicatsum(args):
     args.gcn_num_units = getattr(args, 'gcn_num_units', 256)
     args.gcn_num_labels = getattr(args, 'gcn_num_labels', 10)
     args.gcn_num_layers = getattr(args, 'gcn_num_layers', 1)
+    args.gcn_residual = getattr(args, 'gcn_residual', '')
 
     args.encoder_embed_dim = getattr(args, 'encoder_embed_dim', 256)
     args.encoder_layers = getattr(args, 'encoder_layers', '[(256, 3)] * 4')
