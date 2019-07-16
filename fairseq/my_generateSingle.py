@@ -196,7 +196,7 @@ if __name__ == '__main__':
                    help='path to save predictions')
     group.add_argument('--reference-dir', metavar='DIR', default='valid',
                    help='path to save predictions')
-    parser.add_argument('--outindices', required=False,type=str,
+    parser.add_argument('--outindices', default='excluded_indices/valid_ignoredIndices.log', required=False,type=str,
                             help='load set of indices that were out for a category dataset.')
 
     args = options.parse_args_and_arch(parser)
