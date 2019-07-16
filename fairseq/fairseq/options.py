@@ -113,7 +113,7 @@ def get_parser(desc, default_task='translation'):
     parser = argparse.ArgumentParser(
         description='Facebook AI Research Sequence-to-Sequence Toolkit -- ' + desc)
     parser.add_argument('--no-progress-bar', action='store_true', help='disable progress bar')
-    parser.add_argument('--log-interval', type=int, default=100, metavar='N',
+    parser.add_argument('--log-interval', type=int, default=1000, metavar='N',
                         help='log progress every N batches (when progress bar is disabled)')
     parser.add_argument('--log-format', default='simple', help='log format to use',
                         choices=['json', 'none', 'simple', 'tqdm'])

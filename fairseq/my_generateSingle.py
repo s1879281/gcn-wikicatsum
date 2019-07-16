@@ -192,7 +192,7 @@ def generate_from_script_single(list_args):
 if __name__ == '__main__':
     parser = options.get_generation_parser()
     group = parser.add_argument_group('Generation output')
-    group.add_argument('--decode-dir', metavar='DIR', default='outputs2',
+    group.add_argument('--decode-dir', metavar='DIR', default='outputs_gcn_1layer',
                    help='path to save predictions')
     group.add_argument('--reference-dir', metavar='DIR', default='valid',
                    help='path to save predictions')
