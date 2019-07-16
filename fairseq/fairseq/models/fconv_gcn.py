@@ -392,6 +392,9 @@ class GCNEncoder(FairseqEncoder):
                                                  label_tensor_in, label_tensor_out,
                                                  mask_in, mask_out,
                                                  mask_loop, sent_mask)  # [t, b, h]
+
+                memory_bank = F.dropout(memory_bank, p=self.dropout, training=self.training)
+
         elif self.residual == 'residual':
 
             for g, gcn in enumerate(self.gcn_layers):
@@ -415,6 +418,8 @@ class GCNEncoder(FairseqEncoder):
                                                  mask_in, mask_out,
                                                  mask_loop, sent_mask)  # [t, b, h]
 
+                memory_bank = F.dropout(memory_bank, p=self.dropout, training=self.training)
+
         elif self.residual == 'dense':
             for g, gcn in enumerate(self.gcn_layers):
                 if g == 0:
@@ -437,7 +442,7 @@ class GCNEncoder(FairseqEncoder):
                                                  mask_in, mask_out,
                                                  mask_loop, sent_mask)  # [t, b, h]
 
-
+                memory_bank = F.dropout(memory_bank, p=self.dropout, training=self.training)
 
         # batch_size = memory_bank.size()[1]
         # result_ = memory_bank.permute(2, 1, 0)  # [h,b,t]
@@ -454,7 +459,6 @@ class GCNEncoder(FairseqEncoder):
         # h__1 = torch.cat([h_1, h_2], dim=0)  # [2, b, h]
         # h__2 = torch.cat([h_3, h_4], dim=0)  # [2, b, h]
 
-        memory_bank = F.dropout(memory_bank, p=self.dropout, training=self.training)
         memory_bank = memory_bank.transpose(0, 1)  # [b, t, h]
 
         return memory_bank, embeddings

@@ -38,6 +38,8 @@ def get_adj(src_tokens, src_lengths, labels, node1, node2, labels_dict, node1_di
     tmp_out = {}
 
     for d, de in enumerate(node1):  # iterates over the batch
+        cache = {}
+
         for a, arc in enumerate(de):
 
             arc_0 = labels_dict[labels[d, a]]
@@ -48,8 +50,10 @@ def get_adj(src_tokens, src_lengths, labels, node1, node2, labels_dict, node1_di
                 arc_1 = int(node1_dict[arc])
                 arc_2 = int(node2_dict[node2[d, a]])
 
-                if arc_1 >= _MAX_BATCH_LEN or arc_2 >= _MAX_BATCH_LEN:
+                if arc_1 >= _MAX_BATCH_LEN or arc_2 >= _MAX_BATCH_LEN or (arc_0, arc_1, arc_2) in cache:
                     continue
+
+                cache[(arc_0, arc_1, arc_2)] = 0          # Remove repeated relations in a instance
 
                 if arc_1 in tmp_in:
                     tmp_in[arc_1] += 1
