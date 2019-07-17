@@ -196,7 +196,7 @@ class FConvEncoder2(FairseqEncoder):
         input_embedding = embeddings
 
         # project to size of convolution
-        x = self.fc1(memory_bank + embeddings)
+        x = self.fc1(memory_bank)
 
         # used to mask padding in input
         encoder_padding_mask = src.eq(self.padding_idx).t()  # -> T x B  ###puts 1's where the pad index 0's otherwise

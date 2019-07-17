@@ -18,7 +18,7 @@ import os
 from fairseq import bleu, data, options, progress_bar, tasks, tokenizer, utils
 from fairseq.meters import StopwatchMeter, TimeMeter
 from fairseq.sequence_generator import SequenceGenerator
-from fairseq.sequence_generatorWCS import SequenceGeneratorWCS
+# from fairseq.sequence_generatorWCS import SequenceGeneratorWCS
 from fairseq.sequence_generatorWCSSepahypo import SequenceGeneratorWCSSepahypo
 from fairseq.sequence_scorer import SequenceScorer
 

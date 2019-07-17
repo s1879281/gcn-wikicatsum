@@ -13,7 +13,7 @@ from evaluation.eval_full_model import doEval
 
 def run_generation(fconv, ARGS_LIST, MODEL, DECODEDIR, data_dir):
     if fconv:
-        generate_from_script_single([data_dir, '--path', MODEL, '--decode-dir', DECODEDIR, '--gen-subset', 'valid'] + ARGS_LIST )
+        generate_from_script_single(['--data', data_dir, '--path', MODEL, '--decode-dir', DECODEDIR, '--gen-subset', 'valid'] + ARGS_LIST )
     else:
         generate_from_script([args.data_dir, '--path', MODEL, '--decode-dir', DECODEDIR, '--gen-subset', 'valid'] + ARGS_LIST )
 
