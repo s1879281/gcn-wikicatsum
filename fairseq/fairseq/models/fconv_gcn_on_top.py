@@ -258,11 +258,11 @@ class FConvEncoder3(FairseqEncoder):
         if self.num_attention_layers > 0:
           x = GradMultiply.apply(x, 1.0 / (2.0 * self.num_attention_layers))
 
-        # add output to input embedding for attention
-        y = (x + input_embedding) * math.sqrt(self.normalization_constant)
+        # # add output to input embedding for attention
+        # y = (x + input_embedding) * math.sqrt(self.normalization_constant)
 
         return {
-            'encoder_out': (input_embedding, y),           # modified here
+            'encoder_out': (input_embedding, x),           # modified here
             'encoder_padding_mask': encoder_padding_mask,  # B x T
         }
 
@@ -356,9 +356,9 @@ class GCNEncoder2(FairseqEncoder):
                 mask_in=None, mask_out=None,  # batch* t, degree
                 mask_loop=None, sent_mask=None):
 
-        input_embedding, y = conv_output['encoder_out']
+        input_embedding, x = conv_output['encoder_out']
         encoder_padding_mask = conv_output['encoder_padding_mask']
-        y = F.dropout(y, p=self.dropout, training=self.training)
+        x = F.dropout(x, p=self.dropout, training=self.training)
         # if morph is None:
 
         # else:
@@ -381,7 +381,7 @@ class GCNEncoder2(FairseqEncoder):
 
             for g, gcn in enumerate(self.gcn_layers):
                 if g == 0:
-                    memory_bank = gcn(y, lengths, arc_tensor_in, arc_tensor_out,
+                    memory_bank = gcn(x, lengths, arc_tensor_in, arc_tensor_out,
                                                  label_tensor_in, label_tensor_out,
                                                  mask_in, mask_out,
                                                  mask_loop, sent_mask)  # [t, b, h]
@@ -402,7 +402,7 @@ class GCNEncoder2(FairseqEncoder):
 
             for g, gcn in enumerate(self.gcn_layers):
                 if g == 0:
-                    memory_bank = gcn(y, lengths, arc_tensor_in, arc_tensor_out,
+                    memory_bank = gcn(x, lengths, arc_tensor_in, arc_tensor_out,
                                                  label_tensor_in, label_tensor_out,
                                                  mask_in, mask_out,
                                                  mask_loop, sent_mask)  # [t, b, h]
@@ -410,7 +410,7 @@ class GCNEncoder2(FairseqEncoder):
                     memory_bank = memory_bank.transpose(0, 1)  # [b, t, h]
 
                 elif g == 1:
-                    prev_memory_bank = y + memory_bank
+                    prev_memory_bank = x + memory_bank
                     memory_bank = gcn(prev_memory_bank, lengths, arc_tensor_in, arc_tensor_out,
                                       label_tensor_in, label_tensor_out,
                                       mask_in, mask_out,
@@ -432,7 +432,7 @@ class GCNEncoder2(FairseqEncoder):
         elif self.residual == 'dense':
             for g, gcn in enumerate(self.gcn_layers):
                 if g == 0:
-                    memory_bank = gcn(y, lengths, arc_tensor_in, arc_tensor_out,
+                    memory_bank = gcn(x, lengths, arc_tensor_in, arc_tensor_out,
                                                  label_tensor_in, label_tensor_out,
                                                  mask_in, mask_out,
                                                  mask_loop, sent_mask)  # [t, b, h]
@@ -440,7 +440,7 @@ class GCNEncoder2(FairseqEncoder):
                     memory_bank = memory_bank.transpose(0, 1)  # [b, t, h]
 
                 elif g == 1:
-                    prev_memory_bank = torch.cat([y, memory_bank], dim=2)
+                    prev_memory_bank = torch.cat([x, memory_bank], dim=2)
                     memory_bank = gcn(prev_memory_bank, lengths, arc_tensor_in, arc_tensor_out,
                                       label_tensor_in, label_tensor_out,
                                       mask_in, mask_out,
