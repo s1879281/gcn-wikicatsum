@@ -127,7 +127,7 @@ class SequenceGenerator(object):
                     incremental_states[model] = None
 
                 # compute the encoder output for each beam
-                if isinstance(model.encoder, FConvGCNEncoder):
+                if isinstance(model.encoder, FConvGCNEncoder) or isinstance(model.encoder, FConvGCNOnTopEncoder):
                     adj_arc_in = input['adj_arc_in']
                     adj_arc_out = input['adj_arc_out']
                     adj_lab_in = input['adj_lab_in']
