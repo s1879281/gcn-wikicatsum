@@ -1,7 +1,7 @@
-This is the code for the paper [Generating Summaries with Topic Guidance and Structured Convolutional Decoders]() by Laura Perez-Beltrachini, Yang Liu and Mirella Lapata.
+This is the code for the MSc dissertaion project of University of Edinburgh: Generating Wikipedia: Neural Abstractive Multi-document Summarisation with Graph Convolutional Networks.
 
 
-In this repository we include a link to our WikiCatSum dataset and code for our ConvS2D model. Our code extends an earlier copy of [Facebook AI Research Sequence-to-Sequence Toolkit](https://github.com/pytorch/fairseq) with a sentence aware Structured Convolutional Decoder.
+In this repository we include a link to our WikiCatSum dataset and code for our ConvS2D model. Our code extends the code of[Generating Summaries with Topic Guidance and Structured Convolutional Decoders]() by Laura Perez-Beltrachini, Yang Liu and Mirella Lapata, as well as an earlier copy of [Facebook AI Research Sequence-to-Sequence Toolkit](https://github.com/pytorch/fairseq) with a sentence aware Structured Convolutional Decoder.
 
 ## Dependencies
 
