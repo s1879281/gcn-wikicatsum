@@ -1,0 +1,14 @@
+Namespace(beam=5, cpu=False, data='data-bin/film_tok_min5_L7.5k_gcn_mod_L800', decode_dir='outputs_gcn_2layers_dense_test', fp16=False, gen_subset='test', left_pad_source='True', left_pad_target='False', lenpen=1, log_format='simple', log_interval=1000, max_len_a=0, max_len_b=200, max_sentences=None, max_source_positions=1024, max_target_positions=1024, max_tokens=4000, min_len=1, nbest=1, no_beamable_mm=False, no_early_stop=False, no_progress_bar=False, num_shards=1, outindices='excluded_indices/test_ignoredIndices.log', path='checkpoints/gcn_2layers_dense/checkpoint12.pt', prefix_size=0, quiet=True, raw_text=False, reference_dir='valid', remove_bpe=None, replace_unk=None, sampling=False, sampling_temperature=1, sampling_topk=-1, score_reference=False, seed=1, shard_id=0, skip_invalid_size_inputs_valid_test=True, source_lang=None, target_lang=None, task='gcn_wikicatsum', unkpen=0, unnormalized=False)
+| [src] dictionary: 50000 types
+| [tgt] dictionary: 50000 types
+| [labels] dictionary: 16 types
+| [node1] dictionary: 872 types
+| [node2] dictionary: 864 types
+| data-bin/film_tok_min5_L7.5k_gcn_mod_L800 test 2861 examples
+| loading model(s) from checkpoints/gcn_2layers_dense/checkpoint12.pt
+1024
+1024
+48 indices to be ignored from validation set.
+| WARNING: 48 samples have invalid sizes and will be skipped, max_positions=(1022, 1022), first few sample ids=[337, 854, 1171, 1407, 2610, 725, 2347, 635, 2587, 780]
+| Translated 2813 sentences (130126 tokens) in 330.4s (8.51 sentences/s, 393.79 tokens/s)
+| Generate test with beam=5: BLEU4 = 8.50, 52.6/28.4/18.6/12.4 (BP=0.351, ratio=0.488, syslen=127313, reflen=260738)
