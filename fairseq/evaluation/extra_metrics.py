@@ -20,8 +20,8 @@ def loadOutputs(dir):
     d = {}
     for filename in os.listdir(dir):
         if filename.endswith(".dec"):
-            f = open(os.path.join(dir, filename),'r')
-            d[int(filename.split(".dec")[0])] = f.read().strip().replace(unkConv, missingTok)
+            f = open(os.path.join(dir, filename),'rb')
+            d[int(filename.split(".dec")[0])] = f.read().decode().strip().replace(unkConv, missingTok)
     print("Finish reading system outputs...")
     return d
 

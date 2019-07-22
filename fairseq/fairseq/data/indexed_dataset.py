@@ -180,9 +180,9 @@ class IndexedRawTextDataset(IndexedDataset):
         self.size = len(self.tokens_list)
 
     def read_data(self, path, dictionary):
-        with open(path, 'r') as f:
+        with open(path, 'rb') as f:
             for line in f:
-                self.lines.append(line.strip('\n'))
+                self.lines.append(line.decode().strip('\n'))
                 tokens = Tokenizer.tokenize(
                     line, dictionary, add_if_not_exist=False,
                     append_eos=self.append_eos, reverse_order=self.reverse_order,
@@ -219,9 +219,9 @@ class RawTextDataset(object):
         self.size = len(self.lines)
 
     def read_data(self, path):
-        with open(path, 'r') as f:
+        with open(path, 'rb') as f:
             for line in f:
-                line = line.replace("<SNT>", " ").replace("<EOP>", " ")
+                line = line.decode().replace("<SNT>", " ").replace("<EOP>", " ")
                 self.lines.append(line.strip('\n'))
 
     def __getitem__(self, i):
