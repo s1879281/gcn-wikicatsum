@@ -17,27 +17,31 @@ Related scripts are available in the *wikicatsum/* directory.
 
 ## Training a New Model
 
+### Build Graphs
+Using the files in the downloaded datasets you can extract semantic relationships with the following command. You will need to define the variables as convenient.
+```TEXT``` should be the directory where to find the source and target texts
+
+For example, extract semantic relationships on the training set:
+```
+python preprocessing.py --data-dir TEXT --save-dir TEXT --split train
+```
+
+Extracted (s,p,o) triples and coreference resolution results will be in the following format:
+```
+{'subject': 'John Szpunar', 'subjectSpan': [149, 151], 'relation': 'has', 'relationSpan': [151, 152], 'object': 'book', 'objectSpan': [152, 153], 'paragraphIndex': 4}
+{'representativeMention': 'this movie', 'representativeMentionSpan': [257, 259], 'mentioned': 'it', 'mentionedSpan': [249, 250]}
+```
+
 ### Pre-process
 
 Using the files in the downloaded datasets you can generate data and dictionaries with the following command. You will need to define the variables as convenient.  
 
-```TEXT``` should be the directory where to find the source and target texts  
-```ANNOT``` is the directory where to find the topic model  
+```TEXT``` should be the directory where to find the source and target texts 
 ```SRC_L``` is the length at which you will truncate the input sequence of paragraphs  
-
-Pre-process for the hierarchical decoder and topic labels:
-```
-python my_preprocess.py --source-lang src --target-lang tgt   \
-  --trainpref $TEXT/train --validpref $TEXT/valid --testpref $TEXT/test \
-  --destdir data-bin/$DSTDIR   \
-  --nwordstgt 50000 --nwordssrc 50000 --L $SRC_L \
-  --addAnnotations $ANNOT/$DOMAIN'.'$NUMTOPICS'.TLDA' --numTopics $NUMTOPICS \
-  --src-chunk-length 200 --tgt-chunk-length $MAX_TGT_SENT_LEN \
-  1> data-bin/$DSTDIR/preprocess.log
-```
 
 Use argument ```--singleSeq``` to create source and target as a single long sequence:
 ```
+cd fairseq
 python my_preprocess.py --source-lang src --target-lang tgt \
   --trainpref $TEXT/train --validpref $TEXT/valid --testpref $TEXT/test \
   --destdir data-bin/$DSTDIR \
