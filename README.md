@@ -20,9 +20,9 @@ Related scripts are available in the *wikicatsum/* directory.
 ### Build Graphs
 Using the files in the downloaded datasets you can extract semantic relationships with the following command. You will need to define the variables as convenient.
 
-```TEXT``` should be the directory where to find the source and target texts
+```TEXT``` should be the directory where to find the source and target texts.
 
-For example, extract semantic relationships on the training set:
+For example, to extract semantic relationships on the training set:
 ```
 python preprocessing.py --data-dir TEXT --save-dir TEXT --split train
 ```
@@ -37,9 +37,9 @@ Extracted (s,p,o) triples and coreference resolution results will be in the foll
 
 Using the files in the downloaded datasets you can generate data and dictionaries with the following command. You will need to define the variables as convenient.  
 
-```TEXT``` should be the directory where to find the source and target texts 
+```TEXT``` should be the directory where to find the source and target texts.
 
-```SRC_L``` is the length at which you will truncate the input sequence of paragraphs  
+```SRC_L``` is the length at which you will truncate the input sequence of paragraphs.
 
 Use argument ```--singleSeq``` to create source and target as a single long sequence:
 ```
@@ -58,7 +58,6 @@ After you preprocessed the files you can run the training procedures.
 
 ##### ConvS2S
 ```
-cd fairseq
 CUDA_VISIBLE_DEVICES=$GPUID python train.py data-bin/$DATADIR --lr 0.25 --clip-norm 0.1 --dropout 0.2 --max-tokens 4000 --arch fconv_wikicatsum --save-dir checkpoints/$MODELNAME  --skip-invalid-size-inputs-valid-test --no-progress-bar --task translation --max-target-positions $MAX_TGT_SENT_LEN --max-source-positions MAX_SRC_POSITIONS --outindices checkpoints/$IDXEXCLDIR/ignoredIndices.log --outindicesValid $OUTDIR$IDXEXCLDIR/valid_ignoredIndices.log 1> 'checkpoints/'$MODELNAME'/train.log'
 ```
 
@@ -66,7 +65,6 @@ CUDA_VISIBLE_DEVICES=$GPUID python train.py data-bin/$DATADIR --lr 0.25 --clip-n
 
 ##### ConvGCN
 ```
-cd fairseq
 CUDA_VISIBLE_DEVICES=$GPUID python train.py data-bin/$DATADIR --lr 0.25 --clip-norm 0.1 --dropout 0.2 --max-tokens 4000 --arch fconv_gcn_wikicatsum --save-dir checkpoints/$MODELNAME  --skip-invalid-size-inputs-valid-test --no-progress-bar --task gcn_wikicatsum --max-target-positions $MAX_TGT_SENT_LEN --max-source-positions MAX_SRC_POSITIONS --outindices checkpoints/$IDXEXCLDIR/ignoredIndices.log --outindicesValid $OUTDIR$IDXEXCLDIR/valid_ignoredIndices.log 1> 'checkpoints/'$MODELNAME'/train.log'
 ```
 
