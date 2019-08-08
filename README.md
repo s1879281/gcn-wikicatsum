@@ -19,6 +19,7 @@ Related scripts are available in the *wikicatsum/* directory.
 
 ### Build Graphs
 Using the files in the downloaded datasets you can extract semantic relationships with the following command. You will need to define the variables as convenient.
+
 ```TEXT``` should be the directory where to find the source and target texts
 
 For example, extract semantic relationships on the training set:
@@ -37,6 +38,7 @@ Extracted (s,p,o) triples and coreference resolution results will be in the foll
 Using the files in the downloaded datasets you can generate data and dictionaries with the following command. You will need to define the variables as convenient.  
 
 ```TEXT``` should be the directory where to find the source and target texts 
+
 ```SRC_L``` is the length at which you will truncate the input sequence of paragraphs  
 
 Use argument ```--singleSeq``` to create source and target as a single long sequence:
@@ -56,25 +58,19 @@ After you preprocessed the files you can run the training procedures.
 
 ##### ConvS2S
 ```
+cd fairseq
 CUDA_VISIBLE_DEVICES=$GPUID python train.py data-bin/$DATADIR --lr 0.25 --clip-norm 0.1 --dropout 0.2 --max-tokens 4000 --arch fconv_wikicatsum --save-dir checkpoints/$MODELNAME  --skip-invalid-size-inputs-valid-test --no-progress-bar --task translation --max-target-positions $MAX_TGT_SENT_LEN --max-source-positions MAX_SRC_POSITIONS --outindices checkpoints/$IDXEXCLDIR/ignoredIndices.log --outindicesValid $OUTDIR$IDXEXCLDIR/valid_ignoredIndices.log 1> 'checkpoints/'$MODELNAME'/train.log'
 ```
 
 ```--outindices``` and ```--outindicesValid``` should point to files with list of excluded instances' indices. You should define the other variables as convenient.
 
-##### ConvS2D
-
+##### ConvGCN
 ```
-CUDA_VISIBLE_DEVICES=$GPUID python my_train.py data-bin/$DATADIR --lr 0.25 --clip-norm 0.1 --dropout 0.2 --max-tokens 4000 --arch fconv_fatte_nokey_wikicatsum --save-dir checkpoints/$MODELNAME --skip-invalid-size-inputs-valid-test --no-progress-bar --task wikicatsum --annotations --max-source-positions $MAX_SRC_POSITIONS --max-target-positions 15 --max-tgt-sentence-length $MAX_TGT_SENT_LEN --criterion cross_entropy --num-topics $NUMKEYS --flatenc --hidemb --normpos 1> 'checkpoints/'$MODELNAME'/train.log'
+cd fairseq
+CUDA_VISIBLE_DEVICES=$GPUID python train.py data-bin/$DATADIR --lr 0.25 --clip-norm 0.1 --dropout 0.2 --max-tokens 4000 --arch fconv_gcn_wikicatsum --save-dir checkpoints/$MODELNAME  --skip-invalid-size-inputs-valid-test --no-progress-bar --task gcn_wikicatsum --max-target-positions $MAX_TGT_SENT_LEN --max-source-positions MAX_SRC_POSITIONS --outindices checkpoints/$IDXEXCLDIR/ignoredIndices.log --outindicesValid $OUTDIR$IDXEXCLDIR/valid_ignoredIndices.log 1> 'checkpoints/'$MODELNAME'/train.log'
 ```
 
-```--num-topics``` tells the number of topics in the dataset, this is not used by the encoder-decoder model but just by the data-loader. 
-
-
-##### ConvS2D+T
-
-```
-CUDA_VISIBLE_DEVICES=$GPUID python my_train.py data-bin/$DATADIR --lr 0.25 --clip-norm 0.1 --dropout 0.2 --max-tokens 4000 --arch fconv_fatte_wikicatsum --save-dir checkpoints/$MODELNAME --skip-invalid-size-inputs-valid-test --no-progress-bar --task wikicatsum --annotations --max-source-positions $MAX_SRC_POSITIONS --max-target-positions 15 --max-tgt-sentence-length $MAX_TGT_SENT_LEN --criterion cross_entropy_kpred_1t --num-topics $NUMKEYS --outindices checkpoints/$IDXEXCLDIR/ignoredIndices.log --flatenc --hidemb --normpos --lambda-keyloss 1 1> 'checkpoints/'$MODELNAME'/train.log'
-```
+```--outindices``` and ```--outindicesValid``` should point to files with list of excluded instances' indices. You should define the other variables as convenient.
 
 
 ### Generate
@@ -98,38 +94,16 @@ CUDA_VISIBLE_DEVICES=$GPUID python run_dev_rouge.py \
 --fconv
 ```
 
-##### ConvS2D
-```
-CUDA_VISIBLE_DEVICES=$GPUID python my_generate2.py data-bin/$DATADIR --keywords-embed-path data-bin/$DATADIR/train_keyEmbeddings.txt --path checkpoints/$MODELNAME/checkpoint_best.pt  --batch-size 5 --beam 5 --skip-invalid-size-inputs-valid-test --decode-dir $DECODEDIR --reference-dir $REFDIR --task wikicatsum  --annotations --max-source-positions $MAX_SRC_POSITIONS --max-target-positions 15 --max-tgt-sentence-length $MAX_TGT_SENT_LEN --quiet --gen-subset valid --flatenc --target-raw-text --sepahypo --naive --ngram 3 1> $DECODEDIR'/generate.log'
-```
+##### ConvGCN
 
-```--target-raw-text``` will generate the references formatted as needed for ROUGE scripts. To this you will need to place the file containing the summaries (e.g. valid.tgt) in the same directory where the binaries are (e.g. data-bin/$DATADIR).
-
-
-You can also select best checkpoint based on ROUGE on valid:
-```
-export ARG_LIST="--keywords-embed-path data-bin/$DATADIR/train_keyEmbeddings.txt --batch-size 7 --beam 5 --skip-invalid-size-inputs-valid-test --reference-dir $REFDIR --task wikicatsum --annotations --max-source-positions $MAX_SRC_POSITIONS --max-target-positions 15 --max-tgt-sentence-length $MAX_TGT_SENT_LEN --quiet --gen-subset valid --flatenc --sepahypo --naive --ngram 3 "
-
-
-CUDA_VISIBLE_DEVICES=$GPUID python run_dev_rouge.py \
---data-dir data-bin/$DATADIR \
---model-dir checkpoints/$MODELNAME \
---reference-dir $REFDIR
-```
-
-##### ConvS2D+T
-```
-CUDA_VISIBLE_DEVICES=3 python my_generate2.py data-bin/$DATADIR --keywords-embed-path data-bin/$DATADIR/train_keyEmbeddings.txt --path checkpoints$MODELNAME/checkpoint_best.pt --batch-size 5 --beam 5 --skip-invalid-size-inputs-valid-test --decode-dir $DECODEDIR --reference-dir $REFDIR --task wikicatsum  --annotations --max-source-positions $MAX_SRC_POSITIONS --max-target-positions 15 --max-tgt-sentence-length $MAX_TGT_SENT_LEN --quiet --gen-subset valid --flatenc --sepahypo --naive --ngram 3 --keystop --num-topics 40 1> $DECODEDIR/generate.log
-```
-
-Checkpoint selection based on ROUGE is similar to that of ConvS2D.
+Generating and Checkpoint selection based on ROUGE is similar to that of ConvS2S.
 
 ### Evaluation
 
 #### ROUGE
 Evaluation with ROUGE is based on the [pyrouge](https://github.com/bheinzerling/pyrouge) package. 
 
-Rouge evaluation scripts are adapted from [here](https://github.com/ChenRocks/fast_abs_rl). ```my_generate2.py``` and ```my_generateSingle.py``` will save files for ROUGE evaluation. 
+Rouge evaluation scripts are adapted from [here](https://github.com/ChenRocks/fast_abs_rl). ```my_generateSingle.py``` will save files for ROUGE evaluation. 
 
 Install ```pyrouge``` ([pip install pyrouge](pypi.python.org/pypi/pyrouge)) and cloned it and configure ```ROUGE``` environment variable to the script within your
 pyrouge directory. 
